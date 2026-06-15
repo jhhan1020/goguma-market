@@ -80,7 +80,7 @@ export default async function ProductsPage({
         {products && products.length > 0 ? (
           <div className="divide-y divide-violet-50 bg-white rounded-2xl border border-violet-100 overflow-hidden shadow-sm">
             {products.map((p) => {
-              const profile = (p.profiles as { nickname: string | null } | null)
+              const profile = (p.profiles as unknown as { nickname: string | null } | null)
               const seller = profile?.nickname || '고구마 이웃'
               return (
                 <Link
