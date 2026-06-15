@@ -17,7 +17,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
 
   const { data: { user } } = await supabase.auth.getUser()
   const isOwner = user?.id === product.user_id
-  const profile = product['profiles!products_user_id_profiles_fkey'] as { nickname: string | null } | null
+  const profile = (product.profiles as { nickname: string | null } | null)
   const sellerName = profile?.nickname || '고구마 이웃'
   const sellerInitial = sellerName.charAt(0).toUpperCase()
 
