@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+:root {
+  --background: #fdf8ff;
+  --foreground: #2e1065;
+
+  /* 고구마 껍질 - 자주빛 보라 */
+  --goguma-purple: #7c3aed;
+  --goguma-purple-dark: #5b21b6;
+  --goguma-purple-light: #ede9fe;
+  --goguma-purple-mid: #a78bfa;
+
+  /* 고구마 속살 - 따뜻한 주황 */
+  --goguma-orange: #f59e0b;
+  --goguma-orange-light: #fef3c7;
+  --goguma-orange-dark: #d97706;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-noto), -apple-system, sans-serif;
+}
+
+h1, h2, h3, .font-jua {
+  font-family: var(--font-jua), var(--font-noto), sans-serif;
+}
