@@ -6,7 +6,6 @@ import { createClient } from '@/lib/supabase/server'
 const FEATURES = [
   { icon: '💬', title: '1:1 채팅', badge: '준비중', href: null },
   { icon: '🏘️', title: '동네 인증', badge: '준비중', href: null },
-  { icon: '❤️', title: '관심 목록', badge: '이용 가능', href: '/wishlist' },
   { icon: '⭐', title: '매너 온도', badge: '준비중', href: null },
 ]
 
