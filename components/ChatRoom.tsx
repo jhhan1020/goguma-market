@@ -22,28 +22,40 @@ export default function ChatRoom({ roomId, currentUserId, initialMessages }: Pro
   const [text, setText] = useState('')
   const [sending, setSending] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
-  const supabase = createClient()
+  // supabase 클라이언트를 ref로 고정 — 매 렌더마다 새 인스턴스 생성 방지
+  const supabaseRef = useRef(createClient())
+
+  function addMessage(msg: Message) {
+    setMessages((prev) => prev.some((m) => m.id === msg.id) ? prev : [...prev, msg])
+  }
+
+  // 최신 메시지 fetch (전송 후 폴백)
+  async function fetchLatest() {
+    const { data } = await supabaseRef.current
+      .from('chat_messages')
+      .select('id, content, created_at, sender_id')
+      .eq('room_id', roomId)
+      .order('created_at', { ascending: true })
+    if (data) setMessages(data)
+  }
 
   // Realtime 구독
   useEffect(() => {
+    const supabase = supabaseRef.current
     const channel = supabase
-      .channel(`chat:${roomId}`)
+      .channel(`chat-room-${roomId}`)
       .on(
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'chat_messages', filter: `room_id=eq.${roomId}` },
-        (payload) => {
-          const msg = payload.new as Message
-          setMessages((prev) => {
-            // 낙관적 업데이트 중복 방지
-            if (prev.some((m) => m.id === msg.id)) return prev
-            return [...prev, msg]
-          })
-        }
+        (payload) => addMessage(payload.new as Message)
       )
-      .subscribe()
+      .subscribe((status) => {
+        // 구독 실패 시 폴링으로 대체
+        if (status === 'CHANNEL_ERROR') fetchLatest()
+      })
 
     return () => { supabase.removeChannel(channel) }
-  }, [roomId, supabase])
+  }, [roomId]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // 새 메시지 오면 맨 아래로
   useEffect(() => {
@@ -56,8 +68,10 @@ export default function ChatRoom({ roomId, currentUserId, initialMessages }: Pro
     const content = text.trim()
     setText('')
     setSending(true)
-    await sendMessage(roomId, content)
+    const result = await sendMessage(roomId, content)
     setSending(false)
+    // Realtime이 느릴 경우를 대비해 직접 fetch
+    if (!result.error) fetchLatest()
   }
 
   function formatTime(iso: string) {
@@ -107,7 +121,7 @@ export default function ChatRoom({ roomId, currentUserId, initialMessages }: Pro
             disabled={!text.trim() || sending}
             className="px-4 py-2.5 rounded-xl bg-violet-600 text-white text-sm font-medium hover:bg-violet-700 disabled:opacity-40 transition-colors flex-shrink-0"
           >
-            전송
+            {sending ? '...' : '전송'}
           </button>
         </form>
       </div>
