@@ -17,6 +17,7 @@ export default function SellPage() {
   const [loading, setLoading] = useState(false)
   const [price, setPrice] = useState('')
   const [tradeType, setTradeType] = useState('직거래')
+  const [images, setImages] = useState<string[]>([])
   const router = useRouter()
 
   function formatPrice(val: string) {
@@ -29,6 +30,9 @@ export default function SellPage() {
     setError('')
     setLoading(true)
     const formData = new FormData(e.currentTarget)
+    // 이미지 URL을 명시적으로 추가 (hidden input 의존 방식 대신)
+    formData.delete('images')
+    images.forEach(url => formData.append('images', url))
     const result = await createProduct(formData)
     if (result?.error) {
       setError(result.error)
@@ -61,7 +65,7 @@ export default function SellPage() {
           {/* 사진 */}
           <div className="flex flex-col gap-1.5">
             <label className="text-sm font-medium text-violet-700">사진</label>
-            <ImageUploader />
+            <ImageUploader onImagesChange={setImages} />
           </div>
 
           {/* 제목 */}

@@ -6,10 +6,16 @@ import { createClient } from '@/lib/supabase/client'
 interface Props {
   existingImages?: string[]
   maxImages?: number
+  onImagesChange?: (urls: string[]) => void
 }
 
-export default function ImageUploader({ existingImages = [], maxImages = 5 }: Props) {
+export default function ImageUploader({ existingImages = [], maxImages = 5, onImagesChange }: Props) {
   const [images, setImages] = useState<string[]>(existingImages)
+
+  function updateImages(newImages: string[]) {
+    setImages(newImages)
+    onImagesChange?.(newImages)
+  }
   const [uploading, setUploading] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const supabase = createClient()
@@ -37,7 +43,7 @@ export default function ImageUploader({ existingImages = [], maxImages = 5 }: Pr
       }
     }
 
-    setImages((prev) => [...prev, ...uploaded])
+    updateImages([...images, ...uploaded])
     setUploading(false)
     if (inputRef.current) inputRef.current.value = ''
   }
@@ -47,7 +53,7 @@ export default function ImageUploader({ existingImages = [], maxImages = 5 }: Pr
     if (path) {
       await supabase.storage.from('product-images').remove([decodeURIComponent(path)])
     }
-    setImages((prev) => prev.filter((u) => u !== url))
+    updateImages(images.filter((u) => u !== url))
   }
 
   return (

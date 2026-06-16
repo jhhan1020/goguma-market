@@ -28,6 +28,7 @@ export default function EditProductForm({ product }: { product: Product }) {
   const [price, setPrice] = useState(product.price.toLocaleString())
   const [tradeType, setTradeType] = useState(product.trade_type)
   const [status, setStatus] = useState(product.status)
+  const [images, setImages] = useState<string[]>(product.images ?? [])
 
   function formatPrice(val: string) {
     const num = val.replace(/[^0-9]/g, '')
@@ -39,6 +40,8 @@ export default function EditProductForm({ product }: { product: Product }) {
     setError('')
     setLoading(true)
     const formData = new FormData(e.currentTarget)
+    formData.delete('images')
+    images.forEach(url => formData.append('images', url))
     const result = await updateProduct(product.id, formData)
     if (result?.error) {
       setError(result.error)
@@ -67,7 +70,7 @@ export default function EditProductForm({ product }: { product: Product }) {
 
           <div className="flex flex-col gap-1.5">
             <label className="text-sm font-medium text-violet-700">사진</label>
-            <ImageUploader existingImages={product.images ?? []} />
+            <ImageUploader existingImages={product.images ?? []} onImagesChange={setImages} />
           </div>
 
           <div className="flex flex-col gap-1.5">
