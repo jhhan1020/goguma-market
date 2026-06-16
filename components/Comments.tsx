@@ -9,7 +9,7 @@ interface Comment {
   created_at: string
   user_id: string
   parent_id: string | null
-  profiles: { nickname: string | null } | null
+  profiles: { nickname: string | null; avatar_url?: string | null } | null
 }
 
 interface Props {
@@ -77,14 +77,18 @@ export default function Comments({ productId, initialComments, currentUserId, cu
   function renderComment(c: Comment, isReply = false) {
     const nickname = c.profiles?.nickname || '고구마 이웃'
     const initial = nickname.charAt(0).toUpperCase()
+    const avatarUrl = c.profiles?.avatar_url
     const isMe = c.user_id === currentUserId
     const childReplies = replies(c.id)
 
     return (
       <div key={c.id} className={isReply ? 'ml-10' : ''}>
         <div className="flex gap-2.5">
-          <div className="w-8 h-8 rounded-full bg-violet-100 flex items-center justify-center text-violet-600 font-bold text-xs flex-shrink-0">
-            {initial}
+          <div className="w-8 h-8 rounded-full bg-violet-100 flex items-center justify-center text-violet-600 font-bold text-xs flex-shrink-0 overflow-hidden">
+            {avatarUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={avatarUrl} alt={nickname} className="w-full h-full object-cover" />
+            ) : initial}
           </div>
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-0.5">

@@ -12,7 +12,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
 
   const { data: product } = await supabase
     .from('products')
-    .select('*, profiles!products_user_id_profiles_fkey(nickname)')
+    .select('*, profiles!products_user_id_profiles_fkey(nickname, avatar_url, bio)')
     .eq('id', id)
     .single()
 
@@ -36,10 +36,10 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
 
   const { data: comments } = await supabase
     .from('comments')
-    .select('id, content, created_at, user_id, parent_id, profiles!comments_user_id_profiles_fkey(nickname)')
+    .select('id, content, created_at, user_id, parent_id, profiles!comments_user_id_profiles_fkey(nickname, avatar_url)')
     .eq('product_id', id)
     .order('created_at', { ascending: true })
-  const profile = (product.profiles as unknown as { nickname: string | null } | null)
+  const profile = (product.profiles as unknown as { nickname: string | null; avatar_url: string | null; bio: string | null } | null)
   const sellerName = profile?.nickname || '고구마 이웃'
   const sellerInitial = sellerName.charAt(0).toUpperCase()
   const images: string[] = product.images ?? []
@@ -79,11 +79,17 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
 
         {/* 판매자 정보 */}
         <div className="flex items-center gap-3 py-4 border-b border-violet-50 mb-5">
-          <div className="w-11 h-11 rounded-full bg-violet-100 flex items-center justify-center text-violet-600 font-bold">
-            {sellerInitial}
+          <div className="w-11 h-11 rounded-full bg-violet-100 flex items-center justify-center text-violet-600 font-bold overflow-hidden flex-shrink-0">
+            {profile?.avatar_url ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={profile.avatar_url} alt={sellerName} className="w-full h-full object-cover" />
+            ) : (
+              sellerInitial
+            )}
           </div>
           <div>
             <p className="text-sm font-medium text-gray-800">{sellerName}</p>
+            {profile?.bio && <p className="text-xs text-gray-400 mt-0.5">{profile.bio}</p>}
             <p className="text-xs text-gray-400">판매자</p>
           </div>
         </div>

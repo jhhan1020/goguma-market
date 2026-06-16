@@ -47,7 +47,12 @@ export default function Header() {
               >
                 + 판매하기
               </Link>
-              <span className="text-sm text-gray-400 hidden sm:block">{user.email}</span>
+              <Link
+                href="/profile/edit"
+                className="text-sm text-gray-400 hover:text-violet-600 transition-colors hidden sm:block"
+              >
+                {user.email}
+              </Link>
               <button
                 onClick={handleLogout}
                 className="text-sm px-3 py-1.5 rounded-lg border border-violet-200 text-violet-600 hover:bg-violet-50 transition-colors"
