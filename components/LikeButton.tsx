@@ -23,7 +23,7 @@ export default function LikeButton({ productId, initialLiked, initialCount, isLo
     startTransition(async () => {
       const result = await toggleLike(productId)
       if ('liked' in result) {
-        setLiked(result.liked)
+        setLiked(!!result.liked)
         setCount(prev => result.liked ? prev + 1 : prev - 1)
       }
     })
