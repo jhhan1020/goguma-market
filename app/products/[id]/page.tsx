@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import DeleteButton from '@/components/DeleteButton'
+import ImageGallery from '@/components/ImageGallery'
 import LikeButton from '@/components/LikeButton'
 
 export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
@@ -30,6 +31,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
   const profile = (product.profiles as unknown as { nickname: string | null } | null)
   const sellerName = profile?.nickname || '고구마 이웃'
   const sellerInitial = sellerName.charAt(0).toUpperCase()
+  const images: string[] = product.images ?? []
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--background)' }}>
@@ -54,11 +56,15 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
       </header>
 
       <main className="max-w-screen-md mx-auto px-4 py-6 pb-28">
-        {/* 사진 자리 */}
-        <div className="w-full aspect-square bg-violet-50 rounded-2xl flex flex-col items-center justify-center mb-6 border border-violet-100">
-          <span className="text-7xl mb-2">📦</span>
-          <span className="text-sm text-violet-300">사진 없음</span>
-        </div>
+        {/* 이미지 갤러리 */}
+        {images.length > 0 ? (
+          <ImageGallery images={images} />
+        ) : (
+          <div className="w-full aspect-square bg-violet-50 rounded-2xl flex flex-col items-center justify-center mb-6 border border-violet-100">
+            <span className="text-7xl mb-2">📦</span>
+            <span className="text-sm text-violet-300">사진 없음</span>
+          </div>
+        )}
 
         {/* 판매자 정보 */}
         <div className="flex items-center gap-3 py-4 border-b border-violet-50 mb-5">

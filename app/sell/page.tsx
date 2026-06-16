@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createProduct } from '@/app/actions/product'
+import ImageUploader from '@/components/ImageUploader'
 
 const CATEGORIES = [
   '디지털/가전', '의류/패션', '가구/인테리어', '도서/음반',
@@ -56,6 +57,12 @@ export default function SellPage() {
               {error}
             </div>
           )}
+
+          {/* 사진 */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm font-medium text-violet-700">사진</label>
+            <ImageUploader />
+          </div>
 
           {/* 제목 */}
           <div className="flex flex-col gap-1.5">
