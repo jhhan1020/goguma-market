@@ -20,9 +20,11 @@ export async function createProduct(formData: FormData) {
     return { error: '모든 항목을 올바르게 입력해주세요.' }
   }
 
+  const images = formData.getAll('images') as string[]
+
   const { data, error } = await supabase
     .from('products')
-    .insert({ user_id: user.id, title, description, price, category, trade_type })
+    .insert({ user_id: user.id, title, description, price, category, trade_type, images })
     .select('id')
     .single()
 
@@ -50,9 +52,11 @@ export async function updateProduct(id: string, formData: FormData) {
   }
 
   // RLS가 본인 글만 허용 — user_id 조건 없어도 DB 레벨에서 차단됨
+  const images = formData.getAll('images') as string[]
+
   const { error } = await supabase
     .from('products')
-    .update({ title, description, price, category, trade_type, status })
+    .update({ title, description, price, category, trade_type, status, images })
     .eq('id', id)
 
   if (error) return { error: '수정 중 오류가 발생했어요.' }
