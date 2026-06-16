@@ -5,6 +5,7 @@ import DeleteButton from '@/components/DeleteButton'
 import ImageGallery from '@/components/ImageGallery'
 import LikeButton from '@/components/LikeButton'
 import Comments from '@/components/Comments'
+import ChatButton from '@/components/ChatButton'
 
 export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -140,10 +141,12 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
             <p className="text-xl font-bold text-violet-800">{product.price.toLocaleString()}원</p>
           </div>
 
-          {isOwner && (
+          {isOwner ? (
             <div className="flex-1 flex justify-end">
               <DeleteButton id={id} />
             </div>
+          ) : (
+            <ChatButton productId={id} sellerId={product.user_id} isLoggedIn={!!user} />
           )}
         </div>
       </div>

@@ -57,9 +57,14 @@ export default function Header() {
               <Link
                 href="/wishlist"
                 className="text-sm text-gray-500 hover:text-violet-600 transition-colors hidden sm:block"
-                title="관심목록"
               >
                 ❤️ 관심목록
+              </Link>
+              <Link
+                href="/chat"
+                className="text-sm text-gray-500 hover:text-violet-600 transition-colors hidden sm:block"
+              >
+                💬 채팅
               </Link>
               <Link
                 href="/sell"
