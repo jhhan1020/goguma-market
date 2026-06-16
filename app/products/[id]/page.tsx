@@ -36,7 +36,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
 
   const { data: comments } = await supabase
     .from('comments')
-    .select('id, content, created_at, user_id, profiles!comments_user_id_profiles_fkey(nickname)')
+    .select('id, content, created_at, user_id, parent_id, profiles!comments_user_id_profiles_fkey(nickname)')
     .eq('product_id', id)
     .order('created_at', { ascending: true })
   const profile = (product.profiles as unknown as { nickname: string | null } | null)
