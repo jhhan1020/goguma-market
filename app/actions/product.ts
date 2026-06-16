@@ -60,6 +60,37 @@ export async function updateProduct(id: string, formData: FormData) {
   redirect(`/products/${id}`)
 }
 
+export async function addComment(productId: string, content: string) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) return { error: '로그인이 필요해요.' }
+  if (!content.trim()) return { error: '댓글 내용을 입력해주세요.' }
+
+  const { error } = await supabase
+    .from('comments')
+    .insert({ product_id: productId, user_id: user.id, content: content.trim() })
+
+  if (error) return { error: '댓글 등록 중 오류가 발생했어요.' }
+  return { success: true }
+}
+
+export async function deleteComment(commentId: string) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) return { error: '로그인이 필요해요.' }
+
+  const { error } = await supabase
+    .from('comments')
+    .delete()
+    .eq('id', commentId)
+    .eq('user_id', user.id)
+
+  if (error) return { error: '댓글 삭제 중 오류가 발생했어요.' }
+  return { success: true }
+}
+
 export async function toggleLike(productId: string) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()

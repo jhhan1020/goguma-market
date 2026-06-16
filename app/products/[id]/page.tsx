@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import DeleteButton from '@/components/DeleteButton'
 import ImageGallery from '@/components/ImageGallery'
 import LikeButton from '@/components/LikeButton'
+import Comments from '@/components/Comments'
 
 export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -28,6 +29,12 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
   const { data: myLike } = user
     ? await supabase.from('likes').select('id').eq('product_id', id).eq('user_id', user.id).single()
     : { data: null }
+
+  const { data: comments } = await supabase
+    .from('comments')
+    .select('id, content, created_at, user_id, profiles!comments_user_id_profiles_fkey(nickname)')
+    .eq('product_id', id)
+    .order('created_at', { ascending: true })
   const profile = (product.profiles as unknown as { nickname: string | null } | null)
   const sellerName = profile?.nickname || '고구마 이웃'
   const sellerInitial = sellerName.charAt(0).toUpperCase()
@@ -91,7 +98,17 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
         </p>
 
         {/* 본문 */}
-        <p className="text-sm text-gray-600 leading-relaxed whitespace-pre-wrap">{product.description}</p>
+        <p className="text-sm text-gray-600 leading-relaxed whitespace-pre-wrap mb-6">{product.description}</p>
+
+        {/* 구분선 */}
+        <div className="border-t border-violet-50" />
+
+        {/* 댓글 */}
+        <Comments
+          productId={id}
+          initialComments={(comments ?? []) as Parameters<typeof Comments>[0]['initialComments']}
+          currentUserId={user?.id ?? null}
+        />
       </main>
 
       {/* 하단 고정 바 */}
