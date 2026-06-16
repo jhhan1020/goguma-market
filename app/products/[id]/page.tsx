@@ -78,7 +78,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
         )}
 
         {/* 판매자 정보 */}
-        <div className="flex items-center gap-3 py-4 border-b border-violet-50 mb-5">
+        <Link href={`/users/${product.user_id}`} className="flex items-center gap-3 py-4 border-b border-violet-50 mb-5 hover:bg-violet-50/50 -mx-4 px-4 transition-colors">
           <div className="w-11 h-11 rounded-full bg-violet-100 flex items-center justify-center text-violet-600 font-bold overflow-hidden flex-shrink-0">
             {profile?.avatar_url ? (
               // eslint-disable-next-line @next/next/no-img-element
@@ -87,12 +87,15 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
               sellerInitial
             )}
           </div>
-          <div>
+          <div className="flex-1">
             <p className="text-sm font-medium text-gray-800">{sellerName}</p>
             {profile?.bio && <p className="text-xs text-gray-400 mt-0.5">{profile.bio}</p>}
-            <p className="text-xs text-gray-400">판매자</p>
+            <p className="text-xs text-gray-400">판매자 · 판매 글 보기</p>
           </div>
-        </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-violet-300">
+            <path d="M9 18l6-6-6-6" />
+          </svg>
+        </Link>
 
         {/* 뱃지 */}
         <div className="flex flex-wrap gap-2 mb-3">
