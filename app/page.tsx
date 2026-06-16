@@ -19,6 +19,7 @@ export default async function Home() {
     .select('id, title, price, category, trade_type, status, created_at, images')
     .eq('status', '판매중')
     .order('created_at', { ascending: false })
+    .limit(5)
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--background)' }}>
