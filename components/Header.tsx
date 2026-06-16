@@ -55,6 +55,13 @@ export default function Header() {
           {user ? (
             <>
               <Link
+                href="/wishlist"
+                className="text-sm text-gray-500 hover:text-violet-600 transition-colors hidden sm:block"
+                title="관심목록"
+              >
+                ❤️ 관심목록
+              </Link>
+              <Link
                 href="/sell"
                 className="text-sm px-3 py-1.5 rounded-lg bg-amber-400 text-white font-medium hover:bg-amber-500 transition-colors"
               >
