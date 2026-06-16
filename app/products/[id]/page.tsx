@@ -110,7 +110,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
         {/* 댓글 */}
         <Comments
           productId={id}
-          initialComments={(comments ?? []) as Parameters<typeof Comments>[0]['initialComments']}
+          initialComments={(comments ?? []) as unknown as Parameters<typeof Comments>[0]['initialComments']}
           currentUserId={user?.id ?? null}
           currentUserNickname={myProfile?.nickname ?? null}
         />
