@@ -16,7 +16,7 @@ export default async function Home() {
 
   const { data: products } = await supabase
     .from('products')
-    .select('id, title, price, category, trade_type, status, created_at')
+    .select('id, title, price, category, trade_type, status, created_at, images')
     .eq('status', '판매중')
     .order('created_at', { ascending: false })
 
@@ -67,9 +67,14 @@ export default async function Home() {
                   href={`/products/${p.id}`}
                   className="flex items-center gap-4 px-4 py-4 hover:bg-violet-50 transition-colors"
                 >
-                  {/* 썸네일 자리 */}
-                  <div className="w-16 h-16 rounded-xl bg-violet-50 flex items-center justify-center flex-shrink-0 border border-violet-100 text-2xl">
-                    📦
+                  {/* 썸네일 */}
+                  <div className="w-16 h-16 rounded-xl bg-violet-50 flex items-center justify-center flex-shrink-0 border border-violet-100 overflow-hidden text-2xl">
+                    {p.images && (p.images as string[]).length > 0 ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={(p.images as string[])[0]} alt={p.title} className="w-full h-full object-cover" />
+                    ) : (
+                      '📦'
+                    )}
                   </div>
                   {/* 상품 정보 */}
                   <div className="flex-1 min-w-0">

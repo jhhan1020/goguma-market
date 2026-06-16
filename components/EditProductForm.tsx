@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { updateProduct } from '@/app/actions/product'
+import ImageUploader from '@/components/ImageUploader'
 
 const CATEGORIES = [
   '디지털/가전', '의류/패션', '가구/인테리어', '도서/음반',
@@ -18,6 +19,7 @@ interface Product {
   category: string
   trade_type: string
   status: string
+  images?: string[] | null
 }
 
 export default function EditProductForm({ product }: { product: Product }) {
@@ -62,6 +64,11 @@ export default function EditProductForm({ product }: { product: Product }) {
           {error && (
             <div className="bg-red-50 border border-red-100 rounded-xl px-4 py-3 text-sm text-red-600">{error}</div>
           )}
+
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm font-medium text-violet-700">사진</label>
+            <ImageUploader existingImages={product.images ?? []} />
+          </div>
 
           <div className="flex flex-col gap-1.5">
             <label className="text-sm font-medium text-violet-700">제목</label>
