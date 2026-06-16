@@ -9,13 +9,26 @@ import GogumaCharacter from './GogumaCharacter'
 
 export default function Header() {
   const [user, setUser] = useState<User | null>(null)
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
   const router = useRouter()
   const supabase = createClient()
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => setUser(data.user))
+    supabase.auth.getUser().then(({ data }) => {
+      setUser(data.user)
+      if (data.user) {
+        supabase.from('profiles').select('avatar_url').eq('id', data.user.id).single()
+          .then(({ data: profile }) => setAvatarUrl(profile?.avatar_url ?? null))
+      }
+    })
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
       setUser(session?.user ?? null)
+      if (session?.user) {
+        supabase.from('profiles').select('avatar_url').eq('id', session.user.id).single()
+          .then(({ data: profile }) => setAvatarUrl(profile?.avatar_url ?? null))
+      } else {
+        setAvatarUrl(null)
+      }
     })
     return () => subscription.unsubscribe()
   }, [])
@@ -49,9 +62,19 @@ export default function Header() {
               </Link>
               <Link
                 href="/profile/edit"
-                className="text-sm text-gray-400 hover:text-violet-600 transition-colors hidden sm:block"
+                className="flex items-center gap-2 hover:opacity-80 transition-opacity hidden sm:flex"
               >
-                {user.email}
+                <div className="w-7 h-7 rounded-full bg-violet-100 flex items-center justify-center overflow-hidden flex-shrink-0">
+                  {avatarUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={avatarUrl} alt="프로필" className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-xs text-violet-500 font-bold">
+                      {user.email?.charAt(0).toUpperCase()}
+                    </span>
+                  )}
+                </div>
+                <span className="text-sm text-gray-400">{user.email}</span>
               </Link>
               <button
                 onClick={handleLogout}
