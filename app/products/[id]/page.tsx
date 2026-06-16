@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import DeleteButton from '@/components/DeleteButton'
+import LikeButton from '@/components/LikeButton'
 
 export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -17,6 +18,15 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
 
   const { data: { user } } = await supabase.auth.getUser()
   const isOwner = user?.id === product.user_id
+
+  const { count: likeCount } = await supabase
+    .from('likes')
+    .select('*', { count: 'exact', head: true })
+    .eq('product_id', id)
+
+  const { data: myLike } = user
+    ? await supabase.from('likes').select('id').eq('product_id', id).eq('user_id', user.id).single()
+    : { data: null }
   const profile = (product.profiles as unknown as { nickname: string | null } | null)
   const sellerName = profile?.nickname || '고구마 이웃'
   const sellerInitial = sellerName.charAt(0).toUpperCase()
@@ -81,6 +91,13 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
       {/* 하단 고정 바 */}
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-violet-100">
         <div className="max-w-screen-md mx-auto px-4 py-3 flex items-center gap-3">
+          <LikeButton
+            productId={id}
+            initialLiked={!!myLike}
+            initialCount={likeCount ?? 0}
+            isLoggedIn={!!user}
+          />
+
           <div className="flex-shrink-0">
             <p className="text-xs text-gray-400">가격</p>
             <p className="text-xl font-bold text-violet-800">{product.price.toLocaleString()}원</p>

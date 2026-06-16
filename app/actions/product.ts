@@ -60,6 +60,28 @@ export async function updateProduct(id: string, formData: FormData) {
   redirect(`/products/${id}`)
 }
 
+export async function toggleLike(productId: string) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) return { error: '로그인이 필요해요.' }
+
+  const { data: existing } = await supabase
+    .from('likes')
+    .select('id')
+    .eq('user_id', user.id)
+    .eq('product_id', productId)
+    .single()
+
+  if (existing) {
+    await supabase.from('likes').delete().eq('id', existing.id)
+    return { liked: false }
+  } else {
+    await supabase.from('likes').insert({ user_id: user.id, product_id: productId })
+    return { liked: true }
+  }
+}
+
 export async function deleteProduct(id: string) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
