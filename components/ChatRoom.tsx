@@ -56,16 +56,6 @@ export default function ChatRoom({ roomId, currentUserId, initialMessages }: Pro
     const content = text.trim()
     setText('')
     setSending(true)
-
-    // 낙관적 추가
-    const optimistic: Message = {
-      id: crypto.randomUUID(),
-      content,
-      created_at: new Date().toISOString(),
-      sender_id: currentUserId,
-    }
-    setMessages((prev) => [...prev, optimistic])
-
     await sendMessage(roomId, content)
     setSending(false)
   }
