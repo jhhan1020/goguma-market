@@ -10,10 +10,10 @@ export default async function ChatListPage() {
   const { data: rooms } = await supabase
     .from('chat_rooms')
     .select(`
-      id, created_at,
+      id, created_at, buyer_id, seller_id,
       products(id, title, images),
-      buyer:profiles!chat_rooms_buyer_id_fkey(nickname, avatar_url),
-      seller:profiles!chat_rooms_seller_id_fkey(nickname, avatar_url)
+      buyer:profiles!chat_rooms_buyer_id_profiles_fkey(nickname, avatar_url),
+      seller:profiles!chat_rooms_seller_id_profiles_fkey(nickname, avatar_url)
     `)
     .or(`buyer_id.eq.${user.id},seller_id.eq.${user.id}`)
     .order('created_at', { ascending: false })
@@ -38,7 +38,7 @@ export default async function ChatListPage() {
               const product = room.products as unknown as { id: string; title: string; images: string[] | null } | null
               const buyer = room.buyer as unknown as { nickname: string | null; avatar_url: string | null } | null
               const seller = room.seller as unknown as { nickname: string | null; avatar_url: string | null } | null
-              const other = user.id === (room as any).buyer_id ? seller : buyer
+              const other = user.id === room.buyer_id ? seller : buyer
               const otherName = other?.nickname || '고구마 이웃'
               const thumb = product?.images?.[0]
 

@@ -14,8 +14,8 @@ export default async function ChatRoomPage({ params }: { params: Promise<{ roomI
     .select(`
       id, buyer_id, seller_id,
       products(id, title, images),
-      buyer:profiles!chat_rooms_buyer_id_fkey(nickname, avatar_url),
-      seller:profiles!chat_rooms_seller_id_fkey(nickname, avatar_url)
+      buyer:profiles!chat_rooms_buyer_id_profiles_fkey(nickname, avatar_url),
+      seller:profiles!chat_rooms_seller_id_profiles_fkey(nickname, avatar_url)
     `)
     .eq('id', roomId)
     .single()
