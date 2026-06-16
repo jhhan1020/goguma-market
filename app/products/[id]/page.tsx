@@ -126,21 +126,10 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
             <p className="text-xl font-bold text-violet-800">{product.price.toLocaleString()}원</p>
           </div>
 
-          {isOwner ? (
-            // 내 글: 삭제 버튼
+          {isOwner && (
             <div className="flex-1 flex justify-end">
               <DeleteButton id={id} />
             </div>
-          ) : user ? (
-            // 타인 글 + 로그인: 채팅하기
-            <button className="flex-1 py-3 rounded-xl bg-violet-600 text-white font-bold hover:bg-violet-700 transition-colors">
-              채팅하기
-            </button>
-          ) : (
-            // 비로그인
-            <Link href="/login" className="flex-1 py-3 rounded-xl bg-violet-600 text-white font-bold text-center hover:bg-violet-700 transition-colors">
-              로그인하고 채팅하기
-            </Link>
           )}
         </div>
       </div>
