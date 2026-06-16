@@ -4,10 +4,10 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 
 const FEATURES = [
-  { icon: '💬', title: '1:1 채팅', badge: '준비중' },
-  { icon: '🏘️', title: '동네 인증', badge: '준비중' },
-  { icon: '❤️', title: '관심 목록', badge: '준비중' },
-  { icon: '⭐', title: '매너 온도', badge: '준비중' },
+  { icon: '💬', title: '1:1 채팅', badge: '준비중', href: null },
+  { icon: '🏘️', title: '동네 인증', badge: '준비중', href: null },
+  { icon: '❤️', title: '관심 목록', badge: '이용 가능', href: '/wishlist' },
+  { icon: '⭐', title: '매너 온도', badge: '준비중', href: null },
 ]
 
 export default async function Home() {
@@ -115,15 +115,26 @@ export default async function Home() {
         <section className="mt-8">
           <h2 className="text-base font-bold text-violet-700 mb-3">🚀 곧 추가될 기능</h2>
           <div className="grid grid-cols-2 gap-2">
-            {FEATURES.map((f) => (
-              <div key={f.title} className="bg-white border border-violet-100 rounded-2xl px-4 py-3 flex items-center gap-3 shadow-sm">
-                <span className="text-2xl">{f.icon}</span>
-                <div>
-                  <p className="text-sm font-medium text-violet-800">{f.title}</p>
-                  <span className="text-xs text-amber-500">{f.badge}</span>
+            {FEATURES.map((f) => {
+              const inner = (
+                <>
+                  <span className="text-2xl">{f.icon}</span>
+                  <div>
+                    <p className="text-sm font-medium text-violet-800">{f.title}</p>
+                    <span className={`text-xs ${f.href ? 'text-green-500' : 'text-amber-500'}`}>{f.badge}</span>
+                  </div>
+                </>
+              )
+              return f.href ? (
+                <Link key={f.title} href={f.href} className="bg-white border border-violet-200 rounded-2xl px-4 py-3 flex items-center gap-3 shadow-sm hover:shadow-md hover:border-violet-300 transition-all">
+                  {inner}
+                </Link>
+              ) : (
+                <div key={f.title} className="bg-white border border-violet-100 rounded-2xl px-4 py-3 flex items-center gap-3 shadow-sm opacity-70">
+                  {inner}
                 </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </section>
 
