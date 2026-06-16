@@ -14,9 +14,9 @@ export default async function WishlistPage() {
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
 
-  const products = (likes ?? [])
+  const products = ((likes ?? [])
     .map((l) => l.products)
-    .filter(Boolean) as {
+    .filter(Boolean) as unknown) as {
       id: string; title: string; price: number; category: string
       trade_type: string; status: string; created_at: string; images: string[] | null
     }[]
