@@ -30,6 +30,10 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
     ? await supabase.from('likes').select('id').eq('product_id', id).eq('user_id', user.id).single()
     : { data: null }
 
+  const { data: myProfile } = user
+    ? await supabase.from('profiles').select('nickname').eq('id', user.id).single()
+    : { data: null }
+
   const { data: comments } = await supabase
     .from('comments')
     .select('id, content, created_at, user_id, profiles!comments_user_id_profiles_fkey(nickname)')
@@ -108,6 +112,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
           productId={id}
           initialComments={(comments ?? []) as Parameters<typeof Comments>[0]['initialComments']}
           currentUserId={user?.id ?? null}
+          currentUserNickname={myProfile?.nickname ?? null}
         />
       </main>
 

@@ -15,9 +15,10 @@ interface Props {
   productId: string
   initialComments: Comment[]
   currentUserId: string | null
+  currentUserNickname: string | null
 }
 
-export default function Comments({ productId, initialComments, currentUserId }: Props) {
+export default function Comments({ productId, initialComments, currentUserId, currentUserNickname }: Props) {
   const [comments, setComments] = useState(initialComments)
   const [text, setText] = useState('')
   const [error, setError] = useState('')
@@ -40,7 +41,7 @@ export default function Comments({ productId, initialComments, currentUserId }: 
           content: text.trim(),
           created_at: new Date().toISOString(),
           user_id: currentUserId,
-          profiles: null,
+          profiles: { nickname: currentUserNickname },
         }])
         setText('')
       }
